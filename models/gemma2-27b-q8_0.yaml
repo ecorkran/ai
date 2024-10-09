@@ -4,6 +4,8 @@ mmap: true
 name: gemma-2-27b-q8_0
 parameters:
   model: gemma-2-27b/gemma-2-27b.Q8_0.gguf
+  tokenizer: gemma-2-27b/tokenizer.json
+  tokenizer_config: gemma-2-27b/tokenizer_config.json
 stopwords:
 - '<|im_end|>'
 - '<end_of_turn>'

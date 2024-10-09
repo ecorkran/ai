@@ -4,6 +4,8 @@ mmap: true
 name: mixtral-8x7b-instruct-q5
 parameters:
   model: mixtral-8x7b/mixtral-8x7b-instruct-v0.1.Q5_K_M.gguf
+  tokenizer: mixtral-8x7b/tokenizer.json
+  tokenizer_config: mixtral-8x7b/tokenizer_config.json
 stopwords:
 - <|im_end|>
 - <dummy32000>
