@@ -1,0 +1,46 @@
+context_size: 32768
+f16: true
+mmap: true
+gpu_layers: 90
+name: mixtral-8x7b-instruct-q5-ex
+parameters:
+  model: mixtral-8x7b/mixtral-8x7b-instruct-v0.1.Q5_K_M.gguf
+  temperature: 0.2
+  top_k: 40
+  seed: -1
+  top_p: 0.95  
+mirostat: 2
+mirostat_eta: 1.0
+mirostat_tau: 1.0
+
+stopwords:
+- <|im_end|>
+- <dummy32000>
+- </s>
+template:
+  chat: &chat |
+    [INST] {{.Input}} [/INST]  
+  chat_message: |
+    <|im_start|>{{ .RoleName }}
+    {{ if .FunctionCall -}}
+    Function call:
+    {{ else if eq .RoleName "tool" -}}
+    Function response:
+    {{ end -}}
+    {{ if .Content -}}
+    {{.Content }}
+    {{ end -}}
+    {{ if .FunctionCall -}}
+    {{toJson .FunctionCall}}
+    {{ end -}}<|im_end|>
+  completion: *chat
+  function: |
+    <|im_start|>system
+    You are a function calling AI model. You are provided with functions to execute. You may call one or more functions to assist with the user query. Don't make assumptions about what values to plug into functions. Here are the available tools:
+    {{range .Functions}}
+    {'type': 'function', 'function': {'name': '{{.Name}}', 'description': '{{.Description}}', 'parameters': {{toJson .Parameters}} }}
+    {{end}}
+    For each function call return a json object with function name and arguments
+    <|im_end|>
+    {{.Input -}}
+    <|im_start|>assistant
